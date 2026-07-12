@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOOVED · 从零学建站</title>
+<style>
+  /* ===== CSS Variables / Themes ===== */
+  :root {
+    --bg: #0a1628;
+    --bg2: #111d35;
+    --bg3: #1a2d55;
+    --card: #162044;
+    --cardhover: #1e2d5a;
+    --text: #e8edf5;
+    --text2: #94a3b8;
+    --accent: #3b82f6;
+    --accent2: #60a5fa;
+    --green: #34d399;
+    --orange: #f59e0b;
+    --border: #1e3a5f;
+    --shadow: rgba(0,0,0,0.3);
+    --gradient: linear-gradient(135deg, #1e3a5f, #0a1628);
+    --progress-bg: #1a2d55;
+    --progress-fill: #3b82f6;
+  }
+  .theme-light {
+    --bg: #f8fafc;
+    --bg2: #f1f5f9;
+    --bg3: #e2e8f0;
+    --card: #ffffff;
+    --cardhover: #f0f4f8;
+    --text: #1e293b;
+    --text2: #64748b;
+    --accent: #2563eb;
+    --accent2: #3b82f6;
+    --green: #10b981;
+    --orange: #f59e0b;
+    --border: #cbd5e1;
+    --shadow: rgba(0,0,0,0.08);
+    --gradient: linear-gradient(135deg, #dbeafe, #f0f9ff);
+    --progress-bg: #e2e8f0;
+    --progress-fill: #2563eb;
+  }
+  .theme-neon {
+    --bg: #0a0a1a;
+    --bg2: #12122a;
+    --bg3: #1a1a3a;
+    --card: #16163a;
+    --cardhover: #202050;
+    --text: #e0e0ff;
+    --text2: #8888bb;
+    --accent: #00f5d4;
+    --accent2: #00b4d8;
+    --green: #00ff87;
+    --orange: #ffaa00;
+    --border: #2a2a5a;
+    --shadow: rgba(0,255,212,0.1);
+    --gradient: linear-gradient(135deg, #1a1a3a, #0a0a1a);
+    --progress-bg: #1a1a3a;
+    --progress-fill: #00f5d4;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    transition: background 0.4s, color 0.4s;
+    min-height: 100vh;
+  }
+
+  /* Theme Switcher */
+  .theme-switcher {
+    position: fixed; top: 16px; right: 16px; z-index: 1000;
+    display: flex; gap: 6px;
+  }
+  .theme-btn {
+    width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border);
+    cursor: pointer; transition: 0.3s;
+  }
+  .theme-btn:hover { transform: scale(1.2); }
+  .theme-btn.t-dark { background: #0a1628; }
+  .theme-btn.t-light { background: #f8fafc; }
+  .theme-btn.t-neon { background: #00f5d4; }
+  .theme-btn.active { border-color: var(--accent); box-shadow: 0 0 12px var(--accent); }
+
+  /* Header */
+  .header {
+    background: var(--gradient);
+    padding: 60px 24px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .header .logo {
+    font-size: 28px; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--green));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .header .logo span { color: var(--orange); -webkit-text-fill-color: var(--orange); }
+  .header h1 { font-size: clamp(24px,5vw,42px); margin: 12px 0 8px; font-weight: 700; }
+  .header p { color: var(--text2); font-size: 16px; max-width: 560px; margin: 0 auto; }
+
+  /* Container */
+  .container { max-width: 800px; margin: 0 auto; padding: 32px 16px 80px; }
+
+  /* Progress Bar */
+  .progress-wrap {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg); padding: 12px 0 8px;
+    backdrop-filter: blur(8px);
+  }
+  .progress-bar {
+    height: 4px; background: var(--progress-bg); border-radius: 4px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; width: 0%; background: var(--progress-fill);
+    border-radius: 4px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+  .progress-text {
+    display: flex; justify-content: space-between; font-size: 12px;
+    color: var(--text2); margin-top: 4px;
+  }
+
+  /* Steps */
+  .step {
+    display: none; animation: fadeUp 0.5s ease;
+  }
+  .step.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Card */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px; margin-bottom: 24px;
+    box-shadow: 0 4px 20px var(--shadow);
+    transition: background 0.4s, border-color 0.4s;
+  }
+  .card h2 { font-size: 22px; margin-bottom: 8px; }
+  .card h3 { font-size: 17px; margin: 20px 0 8px; color: var(--accent); }
+  .card .sub { color: var(--text2); font-size: 14px; margin-bottom: 20px; }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+  .option {
+    padding: 14px 18px; border: 2px solid var(--border);
+    border-radius: 12px; cursor: pointer; transition: 0.3s;
+    font-size: 15px; background: transparent; color: var(--text);
+    text-align: left; display: flex; align-items: center; gap: 10px;
+  }
+  .option:hover { border-color: var(--accent); background: var(--cardhover); }
+  .option.selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 15%, transparent); }
+  .option .emoji { font-size: 20px; flex-shrink: 0; }
+  .option .label { flex: 1; }
+  .option .badge {
+    font-size: 11px; padding: 2px 8px; border-radius: 6px;
+    background: var(--accent); color: white; flex-shrink: 0;
+  }
+
+  /* Input */
+  .input-group { margin: 16px 0; }
+  .input-group label { display: block; font-size: 14px; color: var(--text2); margin-bottom: 6px; }
+  .input-group input, .input-group textarea {
+    width: 100%; padding: 12px 16px; border: 2px solid var(--border);
+    border-radius: 10px; background: var(--bg2); color: var(--text);
+    font-size: 15px; transition: 0.3s; font-family: inherit;
+  }
+  .input-group input:focus, .input-group textarea:focus {
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+  .input-group textarea { resize: vertical; min-height: 80px; }
+
+  /* Buttons */
+  .btn-row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .btn {
+    padding: 12px 28px; border: none; border-radius: 10px; font-size: 15px;
+    font-weight: 600; cursor: pointer; transition: 0.3s;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--accent); color: white;
+  }
+  .btn-primary:hover { filter: brightness(1.15); transform: translateY(-1px); }
+  .btn-secondary {
+    background: var(--bg3); color: var(--text);
+  }
+  .btn-secondary:hover { filter: brightness(1.1); }
+  .btn-success {
+    background: var(--green); color: #111;
+  }
+  .btn-success:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+  /* Knowledge Cards (output) */
+  .knowledge-grid {
+    display: grid; grid-template-columns: 1fr; gap: 12px; margin: 16px 0;
+  }
+  .knowledge-card {
+    padding: 16px; border: 1px solid var(--border);
+    border-radius: 12px; background: var(--bg2);
+  }
+  .knowledge-card .title {
+    font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+  }
+  .knowledge-card .desc { font-size: 13px; color: var(--text2); }
+  .knowledge-card .diff {
+    font-size: 11px; padding: 2px 8px; border-radius: 4px;
+    display: inline-block; margin-top: 4px;
+  }
+  .diff-easy { background: color-mix(in srgb, var(--green) 20%, transparent); color: var(--green); }
+  .diff-medium { background: color-mix(in srgb, var(--orange) 20%, transparent); color: var(--orange); }
+  .diff-hard { background: color-mix(in srgb, #ef4444 20%, transparent); color: #ef4444; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 24px; margin: 16px 0; }
+  .timeline::before {
+    content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .timeline-item { position: relative; margin-bottom: 20px; }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -20px; top: 6px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+  }
+  .timeline-item .day { font-size: 12px; color: var(--accent); font-weight: 600; }
+  .timeline-item .task { font-size: 14px; }
+
+  /* Checklist */
+  .checklist { list-style: none; margin: 12px 0; }
+  .checklist li {
+    padding: 8px 12px; border-left: 3px solid var(--border);
+    margin-bottom: 6px; font-size: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .checklist li .icon { flex-shrink: 0; }
+  .checklist li.done { border-left-color: var(--green); color: var(--text2); text-decoration: line-through; }
+
+  /* Highlight */
+  .highlight {
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px; border-radius: 0 8px 8px 0;
+    margin: 16px 0; font-size: 14px;
+  }
+
+  /* Result Page */
+  .result-section { margin-bottom: 32px; }
+  .result-section h3 {
+    font-size: 18px; display: flex; align-items: center; gap: 8px;
+    margin-bottom: 12px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tag {
+    display: inline-block; padding: 2px 10px; border-radius: 6px;
+    font-size: 12px; background: color-mix(in srgb, var(--accent) 20%, transparent);
+    color: var(--accent); margin: 2px;
+  }
+  .tag.green { background: color-mix(in srgb, var(--green) 20%, transparent); color: var(--green); }
+  .tag.orange { background: color-mix(in srgb, var(--orange) 20%, transparent); color: var(--orange); }
+
+  /* Footer */
+  .footer { text-align: center; padding: 32px; color: var(--text2); font-size: 13px; border-top: 1px solid var(--border); }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .card { padding: 20px 16px; }
+    .header { padding: 40px 16px 30px; }
+    .btn { width: 100%; text-align: center; }
+    .btn-row { flex-direction: column; }
+  }
+
+  /* Tooltip */
+  .tip {
+    background: color-mix(in srgb, var(--orange) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--orange) 30%, transparent);
+    padding: 10px 14px; border-radius: 10px; font-size: 13px;
+    display: flex; align-items: start; gap: 8px; margin: 12px 0;
+  }
+  .tip .emoji { flex-shrink: 0; font-size: 16px; }
+
+  /* Pulsing dot for steps */
+  .step-indicator {
+    display: flex; justify-content: center; gap: 8px; margin-bottom: 24px;
+  }
+  .step-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--border); transition: 0.3s;
+  }
+  .step-dot.active { background: var(--accent); transform: scale(1.3); }
+  .step-dot.done { background: var(--green); }
+</style>
+</head>
+<body>
+
+<!-- Theme Switcher -->
+<div class="theme-switcher">
+  <button class="theme-btn t-dark active" onclick="switchTheme('dark')" title="深色科技风"></button>
+  <button class="theme-btn t-light" onclick="switchTheme('light')" title="浅色商务风"></button>
+  <button class="theme-btn t-neon" onclick="switchTheme('neon')" title="霓虹赛博风"></button>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="logo">MOOVED <span>⚡</span> SOLAR</div>
+  <h1>🌱 从零学建站</h1>
+  <p>你不懂代码？没关系。我来一步步问你需求，帮你搭出第一个网站。<br>全程对话模式，没有难懂术语。</p>
+</header>
+
+<div class="container">
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text">
+      <span id="stepLabel">准备开始</span>
+      <span id="stepCount">0 / 8</span>
+    </div>
+  </div>
+
+  <!-- Step Indicators -->
+  <div class="step-indicator" id="stepDots"></div>
+
+  <!-- ===== STEP 0: Welcome ===== -->
+  <div class="step active" data-step="0">
+    <div class="card">
+      <h2>👋 欢迎，Leo</h2>
+      <p class="sub">我将通过几个问题，了解你的需求，然后给你定制一份 <strong>零基础自学建站计划</strong>。</p>
+      <div class="highlight">
+        <strong>你需要准备：</strong>一台电脑 + 能上网 + 每天1-2小时空余时间。<br>
+        <strong>你不需要：</strong>任何编程基础、任何付费工具。
+      </div>
+      <p style="color:var(--text2);font-size:14px;margin-top:16px;">全程大约需要 5 分钟回答完问题，我会根据你的回答生成专属学习路线图。</p>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="goStep(1)">🚀 开始！告诉我怎么做 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 1: Goal ===== -->
+  <div class="step" data-step="1">
+    <div class="card">
+      <h2>🎯 你想做成什么样的网站？</h2>
+      <p class="sub">选一个最接近你目标的描述</p>
+      <div class="options" id="q1">
+        <div class="option" data-val="brand" onclick="selectOption(this,'q1')">
+          <span class="emoji">🏢</span>
+          <span class="label">品牌官网 + 产品展示<br><small style="color:var(--text2);">有MOOVED品牌介绍、产品图片、联系方式，看起来专业</small></span>
+        </div>
+        <div class="option" data-val="shop" onclick="selectOption(this,'q1')">
+          <span class="emoji">🛒</span>
+          <span class="label">官网 + 商品展示 + 报价<br><small style="color:var(--text2);">除了官网，还有产品列表和参考价格，客户可以浏览</small></span>
+        </div>
+        <div class="option" data-val="installer" onclick="selectOption(this,'q1')">
+          <span class="emoji">🔧</span>
+          <span class="label">官网 + Installer报价系统<div style="display:inline;margin-left:6px;"><span class="badge">你描述的</span></div><br><small style="color:var(--text2);">Installer登录后能用你的产品做报价单给客户</small></span>
+        </div>
+        <div class="option" data-val="full" onclick="selectOption(this,'q1')">
+          <span class="emoji">🏗️</span>
+          <span class="label">完整SaaS系统（长远目标）<br><small style="color:var(--text2);">最终要做带设备监控、计费、客户管理的完整平台</small></span>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(0)">← 上一步</button>
+        <button class="btn btn-primary" onclick="nextWithCheck('q1')" disabled id="btn1">下一步 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 2: Time ===== -->
+  <div class="step" data-step="2">
+    <div class="card">
+      <h2>⏰ 你每天能花多少时间学？</h2>
+      <p class="sub">诚实回答就好，这决定了计划的节奏</p>
+      <div class="options" id="q2">
+        <div class="option" data-val="1h" onclick="selectOption(this,'q2')">
+          <span class="emoji">🌙</span>
+          <span class="label">每天 30分钟 - 1小时<br><small style="color:var(--text2);">下班后抽空学一学，不赶进度</small></span>
+        </div>
+        <div class="option" data-val="2h" onclick="selectOption(this,'q2')">
+          <span class="emoji">☀️</span>
+          <span class="label">每天 1-2小时<br><small style="color:var(--text2);">正常工作后还能挤时间学</small></span>
+        </div>
+        <div class="option" data-val="4h" onclick="selectOption(this,'q2')">
+          <span class="emoji">🔥</span>
+          <span class="label">每天 3小时以上<br><small style="color:var(--text2);">这段时间比较空，想快速上手</small></span>
+        </div>
+        <div class="option" data-val="weekend" onclick="selectOption(this,'q2')">
+          <span class="emoji">📅</span>
+          <span class="label">只有周末有时间<br><small style="color:var(--text2);">工作日太忙，周末集中学</small></span>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(1)">← 上一步</button>
+        <button class="btn btn-primary" onclick="nextWithCheck('q2')" disabled id="btn2">下一步 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 3: Budget ===== -->
+  <div class="step" data-step="3">
+    <div class="card">
+      <h2>💰 你愿意为这个项目花多少钱？</h2>
+      <p class="sub">包括域名、服务器、AI工具订阅等</p>
+      <div class="options" id="q3">
+        <div class="option" data-val="minimal" onclick="selectOption(this,'q3')">
+          <span class="emoji">🆓</span>
+          <span class="label">尽量免费，最多 ¥500<br><small style="color:var(--text2);">只用免费服务 + 少量API费用</small></span>
+        </div>
+        <div class="option" data-val="low" onclick="selectOption(this,'q3')">
+          <span class="emoji">💰</span>
+          <span class="label">¥500 - ¥2000<br><small style="color:var(--text2);">愿意订阅AI工具加速开发</small></span>
+        </div>
+        <div class="option" data-val="medium" onclick="selectOption(this,'q3')">
+          <span class="emoji">💎</span>
+          <span class="label">¥2000 - ¥10000<br><small style="color:var(--text2);">愿意付费买工具/模板/小型服务</small></span>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(2)">← 上一步</button>
+        <button class="btn btn-primary" onclick="nextWithCheck('q3')" disabled id="btn3">下一步 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 4: English Level ===== -->
+  <div class="step" data-step="4">
+    <div class="card">
+      <h2>📖 你的英语水平怎么样？</h2>
+      <p class="sub">编程中会遇到不少英文，但AI能帮你翻译</p>
+      <div class="options" id="q4">
+        <div class="option" data-val="none" onclick="selectOption(this,'q4')">
+          <span class="emoji">😰</span>
+          <span class="label">基本不懂英语<br><small style="color:var(--text2);">看到英文就头疼</small></span>
+        </div>
+        <div class="option" data-val="basic" onclick="selectOption(this,'q4')">
+          <span class="emoji">🙂</span>
+          <span class="label">认识一些基础单词<br><small style="color:var(--text2);">能看懂菜单、按钮上的词</small></span>
+        </div>
+        <div class="option" data-val="good" onclick="selectOption(this,'q4')">
+          <span class="emoji">😎</span>
+          <span class="label">能读技术文档<br><small style="color:var(--text2);">借助翻译工具能看懂大部分</small></span>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(3)">← 上一步</button>
+        <button class="btn btn-primary" onclick="nextWithCheck('q4')" disabled id="btn4">下一步 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 5: Device ===== -->
+  <div class="step" data-step="5">
+    <div class="card">
+      <h2>💻 你用的是什么电脑？</h2>
+      <p class="sub">不同系统配置步骤略有不同</p>
+      <div class="options" id="q5">
+        <div class="option" data-val="win" onclick="selectOption(this,'q5')">
+          <span class="emoji">🪟</span>
+          <span class="label">Windows 电脑<br><small style="color:var(--text2);">大部分人的选择</small></span>
+        </div>
+        <div class="option" data-val="mac" onclick="selectOption(this,'q5')">
+          <span class="emoji">🍎</span>
+          <span class="label">Mac (macOS)<br><small style="color:var(--text2);">苹果电脑</small></span>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(4)">← 上一步</button>
+        <button class="btn btn-primary" onclick="nextWithCheck('q5')" disabled id="btn5">下一步 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 6: AI Tools ===== -->
+  <div class="step" data-step="6">
+    <div class="card">
+      <h2>🤖 你用过AI工具吗？</h2>
+      <p class="sub">比如 ChatGPT、Claude、DeepSeek、通义千问等</p>
+      <div class="options" id="q6">
+        <div class="option" data-val="no" onclick="selectOption(this,'q6')">
+          <span class="emoji">❌</span>
+          <span class="label">没用过<br><small style="color:var(--text2);">没接触过任何AI对话工具</small></span>
+        </div>
+        <div class="option" data-val="chat" onclick="selectOption(this,'q6')">
+          <span class="emoji">💬</span>
+          <span class="label">用过聊天类AI<br><small style="color:var(--text2);">和ChatGPT/DeepSeek聊过天，没用来写过程序</small></span>
+        </div>
+        <div class="option" data-val="code" onclick="selectOption(this,'q6')">
+          <span class="emoji">⌨️</span>
+          <span class="label">用AI写过代码<br><small style="color:var(--text2);">尝试过用AI生成或修改代码</small></span>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(5)">← 上一步</button>
+        <button class="btn btn-primary" onclick="nextWithCheck('q6')" disabled id="btn6">下一步 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 7: Design Style ===== -->
+  <div class="step" data-step="7">
+    <div class="card">
+      <h2>🎨 你喜欢什么样的风格？</h2>
+      <p class="sub">告诉我你的审美偏好，我做计划时推荐对应风格</p>
+      <div class="options" id="q7">
+        <div class="option" data-val="tech" onclick="selectOption(this,'q7')">
+          <span class="emoji">🌌</span>
+          <span class="label">深色科技风<br><small style="color:var(--text2);">像特斯拉/航天公司那种深色背景+发光效果</small></span>
+        </div>
+        <div class="option" data-val="clean" onclick="selectOption(this,'q7')">
+          <span class="emoji">☀️</span>
+          <span class="label">明亮简洁风<br><small style="color:var(--text2);">白色背景+蓝色主色调，干净清爽</small></span>
+        </div>
+        <div class="option" data-val="green" onclick="selectOption(this,'q7')">
+          <span class="emoji">🌿</span>
+          <span class="label">绿色环保风<br><small style="color:var(--text2);">自然的绿色调，突出太阳能/可持续理念</small></span>
+        </div>
+        <div class="option" data-val="show" onclick="selectOption(this,'q7')">
+          <span class="emoji">✨</span>
+          <span class="label">要互动酷炫效果<br><small style="color:var(--text2);">3D动画、鼠标拖拽旋转、滚动触发特效</small></span>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(6)">← 上一步</button>
+        <button class="btn btn-primary" onclick="nextWithCheck('q7')" disabled id="btn7">下一步 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 8: Final ===== -->
+  <div class="step" data-step="8">
+    <div class="card">
+      <h2>📋 最后确认一下</h2>
+      <p class="sub">核对你的回答，没问题就生成计划</p>
+      <div style="background:var(--bg2);border-radius:12px;padding:16px;margin:16px 0;">
+        <div id="summaryReview" style="display:grid;gap:8px;font-size:14px;"></div>
+      </div>
+      <div class="input-group">
+        <label>还有想补充的吗？（可选）</label>
+        <textarea id="extraNote" placeholder="比如：需要加英文版 / 需要集成MTN MoMo支付 / 我已经有域名了…"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(7)">← 回去修改</button>
+        <button class="btn btn-success" onclick="generatePlan()">🎯 生成我的专属学习计划！</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RESULT PAGE ===== -->
+  <div class="step" data-step="result">
+    <div class="card" style="border-color:var(--green);">
+      <h2 style="color:var(--green);">🎉 你的专属学习计划已生成！</h2>
+      <p class="sub">根据你的回答量身定制，打印/截图保存，按天执行即可。</p>
+      <div id="resultContent"></div>
+      <div class="btn-row" style="margin-top:24px;">
+        <button class="btn btn-secondary" onclick="goStep(8)">← 修改回答重新生成</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ 打印/保存为PDF</button>
+        <button class="btn btn-success" onclick="scrollToTop()">回到顶部</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  MOOVED SOLAR ENERGY LTD · 由 Roy 为你定制 · 2026
+</footer>
+
+<script>
+  // ===== STATE =====
+  const answers = {};
+  let currentStep = 0;
+  const totalSteps = 9; // 0-8 + result
+  const stepLabels = [
+    '开始', '目标', '时间', '预算', '英语', '设备', 'AI经验', '风格', '确认'
+  ];
+
+  // ===== Switches =====
+  function switchTheme(t) {
+    document.body.classList.remove('theme-light','theme-neon');
+    if(t==='light') document.body.classList.add('theme-light');
+    else if(t==='neon') document.body.classList.add('theme-neon');
+    document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelector(`.theme-btn.t-${t}`).classList.add('active');
+  }
+
+  // ===== Navigation =====
+  function goStep(n) {
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    const el = n === 'result'
+      ? document.querySelector('.step[data-step="result"]')
+      : document.querySelector(`.step[data-step="${n}"]`);
+    if(el) el.classList.add('active');
+    currentStep = n === 'result' ? -1 : n;
+    updateProgress();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function updateProgress() {
+    const pct = currentStep < 0 ? 100 : (currentStep / (totalSteps-1)) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('stepLabel').textContent = currentStep < 0 ? '完成! 🎉' : stepLabels[currentStep] || '';
+    document.getElementById('stepCount').textContent = currentStep < 0 ? '8 / 8' : `${currentStep} / 8`;
+
+    // Dots
+    const dots = document.getElementById('stepDots');
+    dots.innerHTML = '';
+    for(let i=1;i<=8;i++) {
+      const dot = document.createElement('div');
+      dot.className = 'step-dot';
+      if(currentStep === i) dot.classList.add('active');
+      else if(currentStep > i || currentStep < 0) dot.classList.add('done');
+      dots.appendChild(dot);
+    }
+  }
+
+  // ===== Selection =====
+  function selectOption(el, group) {
+    document.querySelectorAll(`#${group} .option`).forEach(o=>o.classList.remove('selected'));
+    el.classList.add('selected');
+    const val = el.dataset.val;
+    answers[group] = val;
+    const btn = document.getElementById(group === 'q1' ? 'btn1' :
+      group === 'q2' ? 'btn2' :
+      group === 'q3' ? 'btn3' :
+      group === 'q4' ? 'btn4' :
+      group === 'q5' ? 'btn5' :
+      group === 'q6' ? 'btn6' :
+      group === 'q7' ? 'btn7' : '');
+    if(btn) btn.disabled = false;
+  }
+
+  function nextWithCheck(group) {
+    if(!answers[group]) return;
+    const stepMap = {q1:1, q2:2, q3:3, q4:4, q5:5, q6:6, q7:7};
+    const next = stepMap[group] + 1;
+    if(group === 'q7') {
+      // Show summary
+      renderSummary();
+    }
+    goStep(next);
+  }
+
+  function renderSummary() {
+    const map = {
+      q1: {brand:'品牌官网', shop:'官网+商品报价', installer:'官网+Installer报价系统', full:'完整SaaS系统'},
+      q2: {'1h':'每天30分钟-1小时', '2h':'每天1-2小时', '4h':'每天3小时以上', weekend:'只有周末'},
+      q3: {minimal:'尽量免费(¥500以内)', low:'¥500-2000', medium:'¥2000-10000'},
+      q4: {none:'基本不懂英语', basic:'认识基础单词', good:'能读技术文档'},
+      q5: {win:'Windows电脑', mac:'Mac电脑'},
+      q6: {no:'没用过AI', chat:'用过聊天AI', code:'用AI写过代码'},
+      q7: {tech:'深色科技风', clean:'明亮简洁风', green:'绿色环保风', show:'互动酷炫风'}
+    };
+    const el = document.getElementById('summaryReview');
+    el.innerHTML = Object.entries(answers).map(([k,v]) => {
+      const label = {q1:'🎯 目标', q2:'⏰ 时间', q3:'💰 预算', q4:'📖 英语', q5:'💻 设备', q6:'🤖 AI经验', q7:'🎨 风格'}[k] || k;
+      return `<div><strong>${label}:</strong> ${map[k]?.[v] || v}</div>`;
+    }).join('');
+  }
+
+  // ===== Generate Plan =====
+  function generatePlan() {
+    const a = answers;
+    const extra = document.getElementById('extraNote').value;
+
+    // Determine goals
+    const isInstaller = a.q1 === 'installer' || a.q1 === 'full';
+    const isShop = a.q1 === 'shop' || a.q1 === 'installer' || a.q1 === 'full';
+    const isFullSaaS = a.q1 === 'full';
+
+    // Determine pace
+    const isSlow = a.q2 === '1h' || a.q2 === 'weekend';
+    const isMedium = a.q2 === '2h';
+    const isFast = a.q2 === '4h';
+
+    // Determine budget
+    const isCheap = a.q3 === 'minimal';
+    const isMid = a.q3 === 'low';
+
+    // Determine AI level
+    const aiNewb = a.q6 === 'no' || a.q6 === 'chat';
+
+    // Calculate timeline
+    let totalDays, phase1Days, phase2Days, phase3Days;
+    if(isFast) {
+      totalDays = 14; phase1Days = 3; phase2Days = 6; phase3Days = 5;
+    } else if(isMedium) {
+      totalDays = 28; phase1Days = 5; phase2Days = 14; phase3Days = 9;
+    } else {
+      totalDays = 42; phase1Days = 7; phase2Days = 21; phase3Days = 14;
+    }
+
+    const toolRec = isCheap ? 'DeepSeek (按量计费)' : 'Cursor Pro (¥140/月) + DeepSeek';
+
+    document.getElementById('resultContent').innerHTML = `
+      <!-- Overview -->
+      <div class="result-section">
+        <h3>📊 总览</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:12px 0;">
+          <div style="padding:14px;background:var(--bg2);border-radius:10px;text-align:center;">
+            <div style="font-size:24px;font-weight:700;color:var(--accent);">${totalDays}天</div>
+            <div style="font-size:12px;color:var(--text2);">总工期</div>
+          </div>
+          <div style="padding:14px;background:var(--bg2);border-radius:10px;text-align:center;">
+            <div style="font-size:24px;font-weight:700;color:var(--green);">${isCheap ? '¥380-800' : isMid ? '¥1000-2000' : '¥2000-5000'}</div>
+            <div style="font-size:12px;color:var(--text2);">预估总花费</div>
+          </div>
+          <div style="padding:14px;background:var(--bg2);border-radius:10px;text-align:center;">
+            <div style="font-size:24px;font-weight:700;color:var(--orange);">${isFast ? '🔥 冲刺' : isMedium ? '☀️ 稳步' : '🌙 悠闲'}</div>
+            <div style="font-size:12px;color:var(--text2);">学习节奏</div>
+          </div>
+          <div style="padding:14px;background:var(--bg2);border-radius:10px;text-align:center;">
+            <div style="font-size:24px;font-weight:700;color:${a.q4==='none'?'#ef4444':a.q4==='basic'?'var(--orange)':'var(--green)'};">${a.q4==='none'?'需翻译':a.q4==='basic'?'基础':'良好'}</div>
+            <div style="font-size:12px;color:var(--text2);">英语依赖</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tools -->
+      <div class="result-section">
+        <h3>🧰 你需要用到的工具</h3>
+        <div class="knowledge-grid">
+          <div class="knowledge-card">
+            <div class="title">${a.q6==='no'?'🤖 ChatGPT/DeepSeek':'🤖 '+toolRec}</div>
+            <div class="desc">你的编程搭档。不会写的代码都问它，告诉它你想要什么，它给你代码。</div>
+            <span class="diff diff-easy">学习难度：★☆☆</span>
+          </div>
+          <div class="knowledge-card">
+            <div class="title">📝 VS Code (免费)</div>
+            <div class="desc">写代码的软件。装好后像我教你这样操作，很简单。</div>
+            <span class="diff diff-easy">学习难度：★☆☆</span>
+          </div>
+          <div class="knowledge-card">
+            <div class="title">⚡ Node.js (免费)</div>
+            <div class="desc">让网站能跑起来的"引擎"。安装就是下一步点下一步。</div>
+            <span class="diff diff-easy">学习难度：★☆☆</span>
+          </div>
+          <div class="knowledge-card">
+            <div class="title">🌐 Vercel (免费)</div>
+            <div class="desc">把你的网站"放上网"的服务。免费额度够用。</div>
+            <span class="diff diff-easy">学习难度：★☆☆</span>
+          </div>
+          <div class="knowledge-card">
+            <div class="title">🗄️ Supabase (免费)</div>
+            <div class="desc">存数据的地方。Installer账号、产品信息都放这里。</div>
+            <span class="diff diff-medium">学习难度：★★☆</span>
+          </div>
+          ${a.q7 === 'show' ? `
+          <div class="knowledge-card">
+            <div class="title">🎨 Three.js (免费)</div>
+            <div class="desc">做3D互动动画的库。太阳板旋转、粒子特效等。</div>
+            <span class="diff diff-medium">学习难度：★★☆</span>
+          </div>` : ''}
+        </div>
+      </div>
+
+      <!-- Learning Path -->
+      <div class="result-section">
+        <h3>📅 ${totalDays}天学习路线图</h3>
+        <p style="font-size:14px;color:var(--text2);margin-bottom:12px;">按天执行，每天完成当天的任务即可。不懂的随时问AI。</p>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="day">第1天 · 环境准备 (${phase1Days}天)</div>
+            <div class="task">
+              <ol style="padding-left:16px;margin-top:6px;font-size:14px;">
+                <li>下载安装 <strong>VS Code</strong> — 一行命令都不用敲，去官网下载安装就行</li>
+                <li>安装 <strong>Node.js</strong> — 官网下载→双击→下一步→完成</li>
+                <li>打开终端 — 我会在计划里教你按哪几个键</li>
+                <li>运行第一条命令 — 复制粘贴就行，不需要理解</li>
+                <li><strong>关键：</strong>向AI提问"帮我检查Node.js安装好了没有"</li>
+              </ol>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="day">第${phase1Days+1}-${phase1Days+phase2Days}天 · 做出第一个页面 (${phase2Days}天)</div>
+            <div class="task">
+              <ol style="padding-left:16px;margin-top:6px;font-size:14px;">
+                <li>用命令创建项目 — AI会给你一行代码，复制粘贴到终端里</li>
+                <li>让AI生成官网页面的代码 — 把你的需求告诉AI：<br>
+                <span class="tag">示例提问</span> "帮我做一个MOOVED太阳能品牌官网首页，深蓝色背景，顶部有导航栏：首页、产品中心、Installer登录，中间大标题+太阳能图标动画"</li>
+                <li>把AI给的代码复制到VS Code里 → 保存</li>
+                <li>运行项目 — 又是一个复制粘贴命令，然后在浏览器看到你的页面</li>
+                <li><strong>迭代：</strong>截图发给AI→"这里改成两列布局"→AI改代码→复制→刷新→看效果</li>
+                ${a.q7 === 'show' ? `
+                <li><strong>互动动画：</strong>让AI加入Three.js旋转太阳能板/粒子特效</li>` : ''}
+              </ol>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="day">第${phase1Days+phase2Days+1}-${totalDays}天 · Installer系统+上线 (${phase3Days}天)</div>
+            <div class="task">
+              <ol style="padding-left:16px;margin-top:6px;font-size:14px;">
+                ${isInstaller ? `
+                <li>注册Supabase — 免费，用邮箱注册就行</li>
+                <li>让AI配置用户注册登录 — "帮我用Supabase Auth做Installer注册和登录页面"</li>
+                <li>做产品库 — 把你的光伏产品(逆变器、电池)信息录入数据库</li>
+                <li>做报价生成器 — "做一个报价页面，Installer选中产品后自动算总价，生成PDF"</li>
+                <li>做Admin后台 — "帮我做一个管理后台，能看到所有Installer和他们的报价记录"</li>
+                ` : `
+                <li>完善产品展示页面 — 上传产品图片和规格</li>
+                `}
+                <li><strong>部署上线：</strong>注册Vercel → 连接GitHub → 点击Deploy → 10分钟上线</li>
+                <li>绑定你的域名</li>
+                <li>大功告成！🎉</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Prompt Templates -->
+      <div class="result-section">
+        <h3>💬 直接复制这些提问给AI</h3>
+        <p style="font-size:14px;color:var(--text2);margin-bottom:12px;">不用自己想怎么问，直接复制这些整段发给AI：</p>
+
+        <div class="knowledge-card" style="margin-bottom:8px;">
+          <div class="title">📋 1. 创建项目</div>
+          <div class="desc" style="font-size:13px;font-family:monospace;background:var(--bg);padding:8px;border-radius:6px;margin-top:4px;">
+"我是零基础小白，${a.q5==='win'?'用Windows电脑':'用Mac电脑'}。请告诉我一步步怎么安装Node.js并创建一个Next.js项目。每一步都写清楚，不要跳步。"
+          </div>
+        </div>
+
+        <div class="knowledge-card" style="margin-bottom:8px;">
+          <div class="title">📋 2. 生成首页</div>
+          <div class="desc" style="font-size:13px;font-family:monospace;background:var(--bg);padding:8px;border-radius:6px;margin-top:4px;">
+"帮我生成一个MOOVED SOLAR品牌官网的首页HTML代码。${a.q7==='tech'?'深蓝科技风背景，':a.q7==='clean'?'白色简洁风格，':a.q7==='green'?'绿色环保色调，':'带3D互动动画效果，'}导航栏有：首页、产品中心、${isInstaller?'Installer登录':''}。Hero区域显示公司名和slogan。用Tailwind CSS。"
+          </div>
+        </div>
+
+        ${isInstaller ? `
+        <div class="knowledge-card" style="margin-bottom:8px;">
+          <div class="title">📋 3. 报价生成器</div>
+          <div class="desc" style="font-size:13px;font-family:monospace;background:var(--bg);padding:8px;border-radius:6px;margin-top:4px;">
+"帮我做一个Installer报价工具页面。${a.q7==='tech'?'深色科技风':a.q7==='clean'?'明亮简洁风':'绿色风格'}。功能：1)选择客户信息 2)选择产品(逆变器/电池/配件) 3)自动算总价 4)生成PDF报价单。用Next.js + Tailwind + react-pdf。"
+          </div>
+        </div>` : ''}
+
+        <div class="knowledge-card" style="margin-bottom:8px;">
+          <div class="title">📋 4. 部署上线</div>
+          <div class="desc" style="font-size:13px;font-family:monospace;background:var(--bg);padding:8px;border-radius:6px;margin-top:4px;">
+"我用Next.js做了一个网站，${a.q5==='win'?'Windows':'Mac'}电脑。请一字一句教我：1)注册Vercel 2)把代码上传到GitHub 3)连接Vercel部署 4)绑定我自己的域名。越详细越好。"
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Routine -->
+      <div class="result-section">
+        <h3>🎯 每天的学习流程</h3>
+        <div class="checklist">
+          <li><span class="icon">1️⃣</span> 打开AI工具，告诉它你今天想做什么</li>
+          <li><span class="icon">2️⃣</span> 把AI的代码复制到VS Code</li>
+          <li><span class="icon">3️⃣</span> 在浏览器看看效果</li>
+          <li><span class="icon">4️⃣</span> 截图发给AI，说"这里改一下"</li>
+          <li><span class="icon">5️⃣</span> 重复2-4步，直到满意</li>
+          <li><span class="icon">6️⃣</span> 遇到报错？复制错误信息发给AI</li>
+        </div>
+        <div class="tip">
+          <span class="emoji">💡</span>
+          <div><strong>核心心法</strong>：你的工作是"说清楚想要什么"，AI的工作是"写出代码"。你不需要理解代码在干什么，只需要看效果对不对。</div>
+        </div>
+      </div>
+
+      <!-- Extra notes -->
+      ${extra ? `
+      <div class="result-section">
+        <h3>📝 你的补充</h3>
+        <div class="highlight">${extra}</div>
+      </div>` : ''}
+
+      <!-- Next steps -->
+      <div class="result-section">
+        <h3>🚀 准备好了吗？</h3>
+        <div class="knowledge-card" style="border-color:var(--green);">
+          <div class="title">👉 现在就开始第1天：装VS Code</div>
+          <div class="desc" style="margin-top:8px;">
+            1. 打开浏览器 → 搜索 "VS Code 下载" → 点击第一个结果<br>
+            2. 下载安装包 → 双击安装 → 一直点"下一步"<br>
+            3. 安装完成后打开VS Code<br>
+            4. 去问AI：<strong>"我是零基础，VS Code装好了，下一步怎么做？"</strong>
+          </div>
+        </div>
+      </div>
+    `;
+
+    goStep('result');
+  }
+
+  function scrollToTop() {
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  // Init
+  updateProgress();
+</script>
+
+</body>
+</html>
