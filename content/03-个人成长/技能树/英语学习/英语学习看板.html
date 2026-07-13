@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,43 +11,66 @@
   --border:rgba(255,255,255,0.08);--text-primary:#E2E8F0;--text-secondary:#94A3B8;--text-tertiary:#64748B;
   --cyan:#00D9FF;--purple:#A855F7;--emerald:#10B981;--amber:#F59E0B;--rose:#F43F5E;--blue:#3B82F6;
   --mono:'JetBrains Mono','Fira Code','SF Mono','Consolas','Courier New',monospace;
+  --grid-line:rgba(0,217,255,0.025);--glow-radial:rgba(0,217,255,0.06);
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Noto Sans SC',sans-serif;background:var(--bg-deep);color:var(--text-primary);min-height:100vh;overflow-x:hidden;position:relative}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,217,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,217,255,0.025) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:0}
-body::after{content:'';position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:1000px;height:500px;background:radial-gradient(ellipse,rgba(0,217,255,0.06),transparent 70%);pointer-events:none;z-index:0}
+[data-theme="light"]{
+  --bg-deep:#F0F4F8;--bg-card:rgba(255,255,255,0.85);--bg-card-hover:rgba(255,255,255,0.95);
+  --border:rgba(0,0,0,0.08);--text-primary:#1E293B;--text-secondary:#475569;--text-tertiary:#94A3B8;
+  --cyan:#0891B2;--purple:#7C3AED;--emerald:#059669;--amber:#D97706;--rose:#E11D48;--blue:#2563EB;
+  --grid-line:rgba(8,145,178,0.04);--glow-radial:rgba(8,145,178,0.04);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Noto Sans SC',sans-serif;background:var(--bg-deep);color:var(--text-primary);min-height:100vh;overflow-x:hidden;position:relative;transition:background .4s,color .4s}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:1000px;height:500px;background:radial-gradient(ellipse,var(--glow-radial),transparent 70%);pointer-events:none;z-index:0}
 .container{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:24px}
 /* Header */
 .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px}
 .header-left{display:flex;align-items:center;gap:14px}
 .header-logo{width:48px;height:48px;background:linear-gradient(135deg,var(--cyan),var(--purple));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 24px rgba(0,217,255,0.35);animation:logoPulse 3s ease-in-out infinite}
+[data-theme="light"] .header-logo{box-shadow:0 4px 16px rgba(8,145,178,0.3)}
 @keyframes logoPulse{0%,100%{box-shadow:0 0 24px rgba(0,217,255,0.35)}50%{box-shadow:0 0 36px rgba(0,217,255,0.55)}}
 .header-title{font-size:22px;font-weight:700;letter-spacing:-0.02em}
 .header-title span{color:var(--cyan);text-shadow:0 0 12px rgba(0,217,255,0.4)}
+[data-theme="light"] .header-title span{text-shadow:none}
 .header-subtitle{font-size:11px;color:var(--text-tertiary);letter-spacing:0.08em;text-transform:uppercase;margin-top:2px}
 .header-right{display:flex;align-items:center;gap:16px}
 .clock{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--cyan);text-shadow:0 0 10px rgba(0,217,255,0.4)}
+[data-theme="light"] .clock{text-shadow:none}
 .status-badge{display:flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:20px;font-size:12px;color:var(--emerald)}
 .status-dot{width:8px;height:8px;border-radius:50%;background:var(--emerald);animation:dotPulse 2s infinite}
 @keyframes dotPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(16,185,129,0.4)}50%{opacity:0.7;box-shadow:0 0 0 8px rgba(16,185,129,0)}}
+/* Theme Toggle */
+.theme-toggle{width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--bg-card);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:all .3s;backdrop-filter:blur(10px)}
+.theme-toggle:hover{border-color:var(--cyan);box-shadow:0 0 16px rgba(0,217,255,0.15)}
+/* Data Source Badge */
+.data-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:11px;font-family:var(--mono);font-weight:600;border:1px solid var(--border)}
+.data-badge.live{background:rgba(0,217,255,0.1);color:var(--cyan);border-color:rgba(0,217,255,0.3)}
+.data-badge.demo{background:rgba(245,158,11,0.1);color:var(--amber);border-color:rgba(245,158,11,0.3)}
 /* Card base */
 .card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:22px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all .3s;position:relative;overflow:hidden}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)}
+[data-theme="light"] .card::before{background:linear-gradient(90deg,transparent,rgba(0,0,0,0.04),transparent)}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
 .card-title{font-size:15px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px}
 .card-badge{font-size:11px;color:var(--text-tertiary);font-family:var(--mono);padding:3px 10px;background:rgba(255,255,255,0.05);border-radius:12px;border:1px solid var(--border)}
+[data-theme="light"] .card-badge{background:rgba(0,0,0,0.04)}
 .card-link{font-size:13px;color:var(--cyan);cursor:pointer;text-decoration:none;font-weight:500;transition:text-shadow .2s}
 .card-link:hover{text-shadow:0 0 8px rgba(0,217,255,0.5)}
+[data-theme="light"] .card-link:hover{text-shadow:none;text-decoration:underline}
 /* Stats Rings */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
 .stat-ring-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;align-items:center;gap:16px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all .3s;position:relative;overflow:hidden}
 .stat-ring-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--card-color),transparent);opacity:0.5}
 .stat-ring-card:hover{border-color:var(--card-color);box-shadow:0 0 28px rgba(var(--card-rgb),0.12);transform:translateY(-3px)}
 .ring-svg{width:72px;height:72px;flex-shrink:0;transform:rotate(-90deg);filter:drop-shadow(0 0 6px rgba(var(--card-rgb),0.4))}
+[data-theme="light"] .ring-svg{filter:drop-shadow(0 0 4px rgba(var(--card-rgb),0.2))}
 .ring-bg{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:5}
+[data-theme="light"] .ring-bg{stroke:rgba(0,0,0,0.06)}
 .ring-fg{fill:none;stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset 1.8s cubic-bezier(0.4,0,0.2,1)}
 .stat-info{flex:1;min-width:0}
 .stat-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.06em}
 .stat-value{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--card-color);text-shadow:0 0 12px rgba(var(--card-rgb),0.3);line-height:1.2}
+[data-theme="light"] .stat-value{text-shadow:none}
 .stat-sub{font-size:11px;color:var(--text-tertiary);margin-top:3px}
 /* Charts Row */
 .charts-row{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;margin-bottom:24px}
@@ -59,12 +82,14 @@ body::after{content:'';position:fixed;top:-300px;left:50%;transform:translateX(-
 .bar-value{font-family:var(--mono);font-size:11px;color:var(--text-secondary);font-weight:600}
 .bar-label{font-size:11px;color:var(--text-tertiary)}
 .bar-tooltip{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.9);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;margin-bottom:6px}
+[data-theme="light"] .bar-tooltip{background:rgba(30,41,59,0.95);color:#fff}
 .bar-item:hover .bar-tooltip{opacity:1}
 /* Heatmap */
 .heatmap{display:grid;grid-template-columns:repeat(15,1fr);gap:4px;margin-top:4px}
 .heat-cell{aspect-ratio:1;border-radius:4px;transition:all .2s;cursor:pointer;position:relative}
 .heat-cell:hover{transform:scale(1.3);z-index:10}
 .heat-cell[data-level="0"]{background:rgba(255,255,255,0.04)}
+[data-theme="light"] .heat-cell[data-level="0"]{background:rgba(0,0,0,0.04)}
 .heat-cell[data-level="1"]{background:rgba(0,217,255,0.2)}
 .heat-cell[data-level="2"]{background:rgba(0,217,255,0.4)}
 .heat-cell[data-level="3"]{background:rgba(0,217,255,0.65)}
@@ -79,6 +104,7 @@ body::after{content:'';position:fixed;top:-300px;left:50%;transform:translateX(-
 .book-info{flex:1;min-width:0}
 .book-name{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:5px}
 .book-bar{height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;position:relative}
+[data-theme="light"] .book-bar{background:rgba(0,0,0,0.06)}
 .book-bar-fill{height:100%;border-radius:4px;transition:width 1.5s cubic-bezier(0.4,0,0.2,1);position:relative;animation:fillGlow 2s ease-in-out infinite alternate}
 @keyframes fillGlow{from{box-shadow:0 0 4px rgba(var(--book-rgb),0.3)}to{box-shadow:0 0 12px rgba(var(--book-rgb),0.5)}}
 .book-meta{font-family:var(--mono);font-size:12px;color:var(--text-secondary);min-width:120px;text-align:right;flex-shrink:0}
@@ -86,6 +112,7 @@ body::after{content:'';position:fixed;top:-300px;left:50%;transform:translateX(-
 .book-status.done{background:rgba(16,185,129,0.15);color:var(--emerald)}
 .book-status.active{background:rgba(0,217,255,0.15);color:var(--cyan)}
 .book-status.idle{background:rgba(255,255,255,0.05);color:var(--text-tertiary)}
+[data-theme="light"] .book-status.idle{background:rgba(0,0,0,0.04)}
 /* Modules */
 .modules-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
 .module-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all .3s;cursor:pointer;text-decoration:none;color:inherit;display:block;position:relative;overflow:hidden}
@@ -114,18 +141,38 @@ body::after{content:'';position:fixed;top:-300px;left:50%;transform:translateX(-
 /* Review Timeline */
 .review-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:8px}
 .review-stage{text-align:center;padding:14px 8px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;transition:all .2s}
+[data-theme="light"] .review-stage{background:rgba(0,0,0,0.02)}
 .review-stage:hover{border-color:var(--cyan);background:rgba(0,217,255,0.05)}
 .review-stage-name{font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
 .review-stage-interval{font-family:var(--mono);font-size:11px;color:var(--text-tertiary);margin-bottom:6px}
 .review-stage-count{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--cyan)}
+/* iframe Section */
+.iframe-section{margin-bottom:24px}
+.iframe-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0;padding:18px 22px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px 16px 0 0;cursor:pointer;transition:all .3s;backdrop-filter:blur(12px)}
+.iframe-header:hover{border-color:var(--cyan)}
+.iframe-header-title{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text-primary)}
+.iframe-toggle-icon{font-size:14px;color:var(--text-tertiary);transition:transform .3s}
+.iframe-section.expanded .iframe-toggle-icon{transform:rotate(180deg)}
+.iframe-body{background:var(--bg-card);border:1px solid var(--border);border-top:none;border-radius:0 0 16px 16px;overflow:hidden;max-height:0;transition:max-height .5s cubic-bezier(0.4,0,0.2,1);backdrop-filter:blur(12px)}
+.iframe-section.expanded .iframe-body{max-height:800px}
+.iframe-wrap{position:relative;width:100%;height:600px;background:var(--bg-deep)}
+.iframe-wrap iframe{width:100%;height:100%;border:none}
+.iframe-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--text-tertiary)}
+.iframe-placeholder-icon{font-size:48px;opacity:0.5}
+.iframe-placeholder-text{font-size:14px}
+/* Refresh Button */
+.refresh-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(0,217,255,0.1);border:1px solid rgba(0,217,255,0.3);border-radius:20px;font-size:12px;color:var(--cyan);cursor:pointer;transition:all .2s;font-weight:500}
+.refresh-btn:hover{background:rgba(0,217,255,0.2);box-shadow:0 0 12px rgba(0,217,255,0.15)}
+.refresh-btn:active{transform:scale(0.95)}
 /* Footer */
 .footer{display:flex;justify-content:space-between;align-items:center;padding:16px 0;font-size:12px;color:var(--text-tertiary);border-top:1px solid var(--border);margin-top:8px;flex-wrap:wrap;gap:8px}
 .footer span{font-family:var(--mono)}
 /* Responsive */
-@media(max-width:1024px){.stats-row{grid-template-columns:repeat(2,1fr)}.charts-row{grid-template-columns:1fr}.modules-row{grid-template-columns:repeat(2,1fr)}.actions-row{grid-template-columns:repeat(3,1fr)}.review-row{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:640px){.stats-row{grid-template-columns:1fr}.modules-row{grid-template-columns:1fr}.actions-row{grid-template-columns:repeat(2,1fr)}.review-row{grid-template-columns:repeat(2,1fr)}.heatmap{grid-template-columns:repeat(10,1fr)}.header-right{flex-direction:column;align-items:flex-end;gap:8px}}
+@media(max-width:1024px){.stats-row{grid-template-columns:repeat(2,1fr)}.charts-row{grid-template-columns:1fr}.modules-row{grid-template-columns:repeat(2,1fr)}.actions-row{grid-template-columns:repeat(3,1fr)}.review-row{grid-template-columns:repeat(3,1fr)}.iframe-wrap{height:500px}}
+@media(max-width:640px){.stats-row{grid-template-columns:1fr}.modules-row{grid-template-columns:1fr}.actions-row{grid-template-columns:repeat(2,1fr)}.review-row{grid-template-columns:repeat(2,1fr)}.heatmap{grid-template-columns:repeat(10,1fr)}.header-right{flex-direction:column;align-items:flex-end;gap:8px}.iframe-wrap{height:400px}}
 /* Scrollbar */
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.2)}
+[data-theme="light"] ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15)}[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,0.25)}
 </style>
 </head>
 <body>
@@ -140,8 +187,10 @@ body::after{content:'';position:fixed;top:-300px;left:50%;transform:translateX(-
       </div>
     </div>
     <div class="header-right">
+      <div class="data-badge demo" id="dataBadge"><span>●</span><span id="dataBadgeText">演示数据</span></div>
       <div class="clock" id="clock">--:--:--</div>
       <div class="status-badge"><span class="status-dot"></span><span>系统运行中</span></div>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换主题">🌙</button>
     </div>
   </header>
 
@@ -149,26 +198,26 @@ body::after{content:'';position:fixed;top:-300px;left:50%;transform:translateX(-
   <section class="stats-row">
     <div class="stat-ring-card" style="--card-color:#00D9FF;--card-rgb:0,217,255">
       <svg class="ring-svg" viewBox="0 0 80 80"><circle class="ring-bg" cx="40" cy="40" r="34"/><circle class="ring-fg" cx="40" cy="40" r="34" stroke="#00D9FF" stroke-dasharray="213.6" stroke-dashoffset="213.6" id="ring1"/></svg>
-      <div class="stat-info"><div class="stat-label">累计单词</div><div class="stat-value" data-count="1247" data-suffix="">0</div><div class="stat-sub">目标 3,000 · 41.6%</div></div>
+      <div class="stat-info"><div class="stat-label">累计单词</div><div class="stat-value" id="statWords" data-count="1247" data-suffix="">0</div><div class="stat-sub" id="statWordsSub">目标 3,000 · 41.6%</div></div>
     </div>
     <div class="stat-ring-card" style="--card-color:#A855F7;--card-rgb:168,85,247">
       <svg class="ring-svg" viewBox="0 0 80 80"><circle class="ring-bg" cx="40" cy="40" r="34"/><circle class="ring-fg" cx="40" cy="40" r="34" stroke="#A855F7" stroke-dasharray="213.6" stroke-dashoffset="213.6" id="ring2"/></svg>
-      <div class="stat-info"><div class="stat-label">表达积累</div><div class="stat-value" data-count="86" data-suffix="">0</div><div class="stat-sub">目标 200 · 43.0%</div></div>
+      <div class="stat-info"><div class="stat-label">表达积累</div><div class="stat-value" id="statExprs" data-count="86" data-suffix="">0</div><div class="stat-sub" id="statExprsSub">目标 200 · 43.0%</div></div>
     </div>
     <div class="stat-ring-card" style="--card-color:#F59E0B;--card-rgb:245,158,11">
       <svg class="ring-svg" viewBox="0 0 80 80"><circle class="ring-bg" cx="40" cy="40" r="34"/><circle class="ring-fg" cx="40" cy="40" r="34" stroke="#F59E0B" stroke-dasharray="213.6" stroke-dashoffset="213.6" id="ring3"/></svg>
-      <div class="stat-info"><div class="stat-label">连续打卡</div><div class="stat-value" data-count="23" data-suffix=" 天">0</div><div class="stat-sub">目标 30 天 · 76.7%</div></div>
+      <div class="stat-info"><div class="stat-label">连续打卡</div><div class="stat-value" id="statStreak" data-count="23" data-suffix=" 天">0</div><div class="stat-sub" id="statStreakSub">目标 30 天 · 76.7%</div></div>
     </div>
     <div class="stat-ring-card" style="--card-color:#10B981;--card-rgb:16,185,129">
       <svg class="ring-svg" viewBox="0 0 80 80"><circle class="ring-bg" cx="40" cy="40" r="34"/><circle class="ring-fg" cx="40" cy="40" r="34" stroke="#10B981" stroke-dasharray="213.6" stroke-dashoffset="213.6" id="ring4"/></svg>
-      <div class="stat-info"><div class="stat-label">今日已学</div><div class="stat-value" data-count="28" data-suffix="/40">0</div><div class="stat-sub">完成率 70.0%</div></div>
+      <div class="stat-info"><div class="stat-label">今日已学</div><div class="stat-value" id="statToday" data-count="28" data-suffix="/40">0</div><div class="stat-sub" id="statTodaySub">完成率 70.0%</div></div>
     </div>
   </section>
 
   <!-- Charts -->
   <section class="charts-row">
     <div class="card">
-      <div class="card-header"><div class="card-title">📈 周度学习趋势</div><div class="card-badge">5 WEEKS</div></div>
+      <div class="card-header"><div class="card-title">📈 周度学习趋势</div><div style="display:flex;gap:10px;align-items:center"><button class="refresh-btn" onclick="loadDashboardData()">🔄 刷新数据</button><div class="card-badge" id="chartBadge">5 WEEKS</div></div></div>
       <div class="bar-chart" id="barChart"></div>
     </div>
     <div class="card">
@@ -189,22 +238,22 @@ body::after{content:'';position:fixed;top:-300px;left:50%;transform:translateX(-
     <a class="module-card" href="英语学习.html" style="--mod-color:#3B82F6;--mod-rgb:59,130,246">
       <div class="module-icon">📰</div>
       <div class="module-title">阅读理解</div>
-      <div class="module-stats"><div class="module-stat"><div class="module-stat-val">24</div><div class="module-stat-label">已读</div></div><div class="module-stat"><div class="module-stat-val">85%</div><div class="module-stat-label">正确率</div></div></div>
+      <div class="module-stats"><div class="module-stat"><div class="module-stat-val" id="modReading">24</div><div class="module-stat-label">已读</div></div><div class="module-stat"><div class="module-stat-val">85%</div><div class="module-stat-label">正确率</div></div></div>
     </a>
     <a class="module-card" href="英语学习.html" style="--mod-color:#A855F7;--mod-rgb:168,85,247">
       <div class="module-icon">🎧</div>
       <div class="module-title">听力练习</div>
-      <div class="module-stats"><div class="module-stat"><div class="module-stat-val">18</div><div class="module-stat-label">已完成</div></div><div class="module-stat"><div class="module-stat-val">76%</div><div class="module-stat-label">正确率</div></div></div>
+      <div class="module-stats"><div class="module-stat"><div class="module-stat-val" id="modListening">18</div><div class="module-stat-label">已完成</div></div><div class="module-stat"><div class="module-stat-val">76%</div><div class="module-stat-label">正确率</div></div></div>
     </a>
     <a class="module-card" href="英语学习.html" style="--mod-color:#F59E0B;--mod-rgb:245,158,11">
       <div class="module-icon">✏️</div>
       <div class="module-title">语法专题</div>
-      <div class="module-stats"><div class="module-stat"><div class="module-stat-val">7/12</div><div class="module-stat-label">已学</div></div><div class="module-stat"><div class="module-stat-val">80%</div><div class="module-stat-label">正确率</div></div></div>
+      <div class="module-stats"><div class="module-stat"><div class="module-stat-val" id="modGrammar">7/12</div><div class="module-stat-label">已学</div></div><div class="module-stat"><div class="module-stat-val">80%</div><div class="module-stat-label">正确率</div></div></div>
     </a>
     <a class="module-card" href="英语学习.html" style="--mod-color:#00D9FF;--mod-rgb:0,217,255">
       <div class="module-icon">📡</div>
       <div class="module-title">英语新闻</div>
-      <div class="module-stats"><div class="module-stat"><div class="module-stat-val">36</div><div class="module-stat-label">已读</div></div><div class="module-stat"><div class="module-stat-val">48</div><div class="module-stat-label">新词</div></div></div>
+      <div class="module-stats"><div class="module-stat"><div class="module-stat-val" id="modNews">36</div><div class="module-stat-label">已读</div></div><div class="module-stat"><div class="module-stat-val" id="modErrors">0</div><div class="module-stat-label">错题</div></div></div>
     </a>
   </section>
 
@@ -223,13 +272,13 @@ body::after{content:'';position:fixed;top:-300px;left:50%;transform:translateX(-
         <line x1="40" y1="40" x2="40" y2="210" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
       </svg>
     </div>
-    <div class="review-row" style="margin-top:20px">
-      <div class="review-stage"><div class="review-stage-name">初学</div><div class="review-stage-interval">1天后</div><div class="review-stage-count">5</div></div>
-      <div class="review-stage"><div class="review-stage-name">巩固</div><div class="review-stage-interval">2天后</div><div class="review-stage-count">3</div></div>
-      <div class="review-stage"><div class="review-stage-name">强化</div><div class="review-stage-interval">4天后</div><div class="review-stage-count">2</div></div>
-      <div class="review-stage"><div class="review-stage-name">深化</div><div class="review-stage-interval">7天后</div><div class="review-stage-count">1</div></div>
-      <div class="review-stage"><div class="review-stage-name">稳定</div><div class="review-stage-interval">15天后</div><div class="review-stage-count">1</div></div>
-      <div class="review-stage"><div class="review-stage-name">已掌握</div><div class="review-stage-interval">30天后</div><div class="review-stage-count">0</div></div>
+    <div class="review-row" style="margin-top:20px" id="reviewStages">
+      <div class="review-stage"><div class="review-stage-name">初学</div><div class="review-stage-interval">1天后</div><div class="review-stage-count" id="rs1">5</div></div>
+      <div class="review-stage"><div class="review-stage-name">巩固</div><div class="review-stage-interval">2天后</div><div class="review-stage-count" id="rs2">3</div></div>
+      <div class="review-stage"><div class="review-stage-name">强化</div><div class="review-stage-interval">4天后</div><div class="review-stage-count" id="rs3">2</div></div>
+      <div class="review-stage"><div class="review-stage-name">深化</div><div class="review-stage-interval">7天后</div><div class="review-stage-count" id="rs4">1</div></div>
+      <div class="review-stage"><div class="review-stage-name">稳定</div><div class="review-stage-interval">15天后</div><div class="review-stage-count" id="rs5">1</div></div>
+      <div class="review-stage"><div class="review-stage-name">已掌握</div><div class="review-stage-interval">30天后</div><div class="review-stage-count" id="rs6">0</div></div>
     </div>
   </section>
 
@@ -243,14 +292,53 @@ body::after{content:'';position:fixed;top:-300px;left:50%;transform:translateX(-
     <a class="action-btn" href="英语学习.html" style="--act-color:#F43F5E;--act-rgb:244,63,94"><div class="action-icon">⚙️</div><span>设置</span></a>
   </section>
 
+  <!-- iframe Embed Section -->
+  <section class="iframe-section" id="iframeSection">
+    <div class="iframe-header" onclick="toggleIframe()">
+      <div class="iframe-header-title">🖥️ 内嵌学习平台</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:12px;color:var(--text-tertiary);font-family:var(--mono)" id="iframeStatus">点击展开</span>
+        <span class="iframe-toggle-icon">▼</span>
+      </div>
+    </div>
+    <div class="iframe-body">
+      <div class="iframe-wrap">
+        <iframe id="learningFrame" src="about:blank" title="英语学习平台" onload="onIframeLoad()"></iframe>
+        <div class="iframe-placeholder" id="iframePlaceholder">
+          <div class="iframe-placeholder-icon">📖</div>
+          <div class="iframe-placeholder-text">点击上方标题加载学习平台</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
-    <div>数据来源: localStorage · 最后更新: <span id="updateTime">--</span></div>
-    <div>English Learning Dashboard v2.0 · <span id="dateStr"></span></div>
+    <div>数据来源: <span id="dataSource">localStorage</span> · 最后更新: <span id="updateTime">--</span></div>
+    <div>English Learning Dashboard v3.0 · <span id="dateStr"></span></div>
   </footer>
 </div>
 <script>
-// === Live Clock ===
+// ============================
+// Theme Toggle
+// ============================
+function toggleTheme(){
+  const html=document.documentElement;
+  const current=html.getAttribute('data-theme');
+  const next=current==='dark'?'light':'dark';
+  html.setAttribute('data-theme',next);
+  document.getElementById('themeToggle').textContent=next==='dark'?'🌙':'☀️';
+  try{localStorage.setItem('dashboardTheme',next);}catch(e){}
+}
+// Load saved theme
+try{
+  const saved=localStorage.getItem('dashboardTheme');
+  if(saved){document.documentElement.setAttribute('data-theme',saved);document.getElementById('themeToggle').textContent=saved==='dark'?'🌙':'☀️';}
+}catch(e){}
+
+// ============================
+// Live Clock
+// ============================
 function updateClock(){
   const n=new Date();
   const h=String(n.getHours()).padStart(2,'0');
@@ -265,10 +353,13 @@ function updateClock(){
 }
 updateClock();setInterval(updateClock,1000);
 
-// === Animated Counter ===
-function animateCount(el){
-  const target=parseInt(el.dataset.count);
-  const suffix=el.dataset.suffix||'';
+// ============================
+// Animated Counter
+// ============================
+function animateCount(el,target,suffix){
+  if(typeof target==='string')target=parseInt(target);
+  if(isNaN(target))target=0;
+  suffix=suffix||'';
   const duration=1500;const start=performance.now();
   function tick(now){
     const p=Math.min((now-start)/duration,1);
@@ -279,23 +370,200 @@ function animateCount(el){
   requestAnimationFrame(tick);
 }
 
-// === Progress Rings ===
+// ============================
+// Progress Rings
+// ============================
 function animateRing(id,percent){
   const ring=document.getElementById(id);
+  if(!ring)return;
   const circumference=2*Math.PI*34;
-  const offset=circumference*(1-percent/100);
-  setTimeout(()=>{ring.style.strokeDashoffset=offset;},300);
+  const offset=circumference*(1-Math.min(percent,100)/100);
+  ring.style.strokeDashoffset=circumference;
+  setTimeout(()=>{ring.style.strokeDashoffset=offset;},100);
 }
 
-// === Bar Chart ===
-const chartData=[
-  {label:'W1',value:168,color:'#3B82F6'},
-  {label:'W2',value:195,color:'#8B5CF6'},
-  {label:'W3',value:142,color:'#A855F7'},
-  {label:'W4',value:223,color:'#00D9FF'},
-  {label:'W5',value:178,color:'#10B981'}
-];
-function renderChart(){
+// ============================
+// Load Dashboard Data from localStorage
+// ============================
+function loadDashboardData(){
+  let isLive=false;
+  let bookData=null,errorData=null,notesData=null,favData=null,savedDate=null;
+
+  // Read englishLearningData
+  try{
+    const raw=localStorage.getItem('englishLearningData');
+    if(raw){
+      const parsed=JSON.parse(raw);
+      bookData=parsed.bookWordsData||null;
+      errorData=parsed.errorWords||null;
+      savedDate=parsed.savedDate||null;
+      isLive=true;
+    }
+  }catch(e){console.warn('Dashboard: failed to read englishLearningData',e)}
+
+  // Read notes
+  try{
+    const rawNotes=localStorage.getItem('englishNotes');
+    if(rawNotes)notesData=JSON.parse(rawNotes);
+  }catch(e){}
+
+  // Read favorites
+  try{
+    const rawFav=localStorage.getItem('englishFavorites');
+    if(rawFav)favData=JSON.parse(rawFav);
+  }catch(e){}
+
+  // Update data badge
+  const badge=document.getElementById('dataBadge');
+  const badgeText=document.getElementById('dataBadgeText');
+  const dataSource=document.getElementById('dataSource');
+  if(isLive){
+    badge.className='data-badge live';
+    badgeText.textContent='实时数据';
+    dataSource.textContent='localStorage (实时)';
+  }else{
+    badge.className='data-badge demo';
+    badgeText.textContent='演示数据';
+    dataSource.textContent='默认演示数据';
+  }
+
+  // --- Compute Stats ---
+  let totalLearned=0,totalTarget=3000,exprCount=86,streakDays=23,todayLearned=28,todayGoal=40;
+  let bookList=[];
+
+  if(bookData&&Array.isArray(bookData)&&bookData.length>0){
+    bookData.forEach(b=>{
+      const learned=b.learnedWords||0;
+      const total=b.totalWords||0;
+      const prog=b.progress||0;
+      totalLearned+=learned;
+      totalTarget+=total;
+      bookList.push({
+        emoji:b.emoji||'📘',
+        name:b.title||'未知词书',
+        progress:prog,
+        learned:learned,
+        total:total,
+        color:getBookColor(b.title),
+        rgb:getBookRgb(b.title),
+        status:prog>=100?'done':prog>0?'active':'idle'
+      });
+    });
+    // Estimate today's learning from savedDate
+    if(savedDate){
+      const d=new Date(savedDate);
+      const now=new Date();
+      const diffDays=Math.floor((now-d)/(1000*60*60*24));
+      if(diffDays===0){
+        todayLearned=Math.min(todayLearned+5,40); // Bonus if saved today
+      }
+    }
+  }else{
+    // Default books
+    totalLearned=1247;
+    totalTarget=3000;
+    bookList=getDefaultBooks();
+  }
+
+  // Error count
+  const errorCount=errorData?errorData.length:0;
+
+  // Notes count
+  const noteCount=notesData?notesData.length:0;
+
+  // Favorites count
+  const favCount=favData?favData.length:0;
+
+  // --- Update Stat Rings ---
+  const wordsPercent=totalTarget>0?(totalLearned/totalTarget*100):0;
+  const exprsPercent=(exprCount/200*100);
+  const streakPercent=(streakDays/30*100);
+  const todayPercent=(todayLearned/todayGoal*100);
+
+  const elW=document.getElementById('statWords');
+  elW.setAttribute('data-count',totalLearned);
+  animateCount(elW,totalLearned,'');
+  document.getElementById('statWordsSub').textContent='目标 '+totalTarget.toLocaleString()+' · '+wordsPercent.toFixed(1)+'%';
+  animateRing('ring1',wordsPercent);
+
+  const elE=document.getElementById('statExprs');
+  elE.setAttribute('data-count',exprCount);
+  animateCount(elE,exprCount,'');
+  document.getElementById('statExprsSub').textContent='目标 200 · '+exprsPercent.toFixed(1)+'%';
+  animateRing('ring2',exprsPercent);
+
+  const elS=document.getElementById('statStreak');
+  elS.setAttribute('data-count',streakDays);
+  elS.setAttribute('data-suffix',' 天');
+  animateCount(elS,streakDays,' 天');
+  document.getElementById('statStreakSub').textContent='目标 30 天 · '+streakPercent.toFixed(1)+'%';
+  animateRing('ring3',streakPercent);
+
+  const elT=document.getElementById('statToday');
+  elT.setAttribute('data-count',todayLearned);
+  elT.setAttribute('data-suffix','/'+todayGoal);
+  animateCount(elT,todayLearned,'/'+todayGoal);
+  document.getElementById('statTodaySub').textContent='完成率 '+todayPercent.toFixed(1)+'%';
+  animateRing('ring4',todayPercent);
+
+  // --- Update Module Stats ---
+  if(errorCount>0){
+    document.getElementById('modErrors').textContent=errorCount;
+  }
+  if(noteCount>0){
+    // Could display notes count somewhere
+  }
+  if(favCount>0){
+    // Could display favorites count somewhere
+  }
+
+  // --- Update Bar Chart ---
+  renderChart(isLive?totalLearned:0);
+
+  // --- Update Heatmap ---
+  renderHeatmap();
+
+  // --- Update Book List ---
+  renderBooks(bookList.length>0?bookList:getDefaultBooks());
+
+  // --- Update Review Stages ---
+  updateReviewStages(errorData);
+}
+
+function getBookColor(title){
+  const colors={'雅思':'#00D9FF','CET-4':'#10B981','CET-6':'#F59E0B','TOEFL':'#A855F7','商务':'#F43F5E','日常':'#3B82F6'};
+  for(const key in colors){if(title&&title.includes(key))return colors[key];}
+  return '#64748B';
+}
+function getBookRgb(title){
+  const rgbs={'雅思':'0,217,255','CET-4':'16,185,129','CET-6':'245,158,11','TOEFL':'168,85,247','商务':'244,63,94','日常':'59,130,246'};
+  for(const key in rgbs){if(title&&title.includes(key))return rgbs[key];}
+  return '100,116,139';
+}
+
+function getDefaultBooks(){
+  return [
+    {emoji:'📘',name:'雅思核心词汇',progress:75,learned:2247,total:3000,color:'#00D9FF',rgb:'0,217,255',status:'active'},
+    {emoji:'📗',name:'CET-4 词汇',progress:100,learned:4500,total:4500,color:'#10B981',rgb:'16,185,129',status:'done'},
+    {emoji:'📕',name:'CET-6 词汇',progress:32,learned:1820,total:5600,color:'#F59E0B',rgb:'245,158,11',status:'active'},
+    {emoji:'📙',name:'TOEFL 核心词汇',progress:0,learned:0,total:4000,color:'#A855F7',rgb:'168,85,247',status:'idle'},
+    {emoji:'📔',name:'商务英语词汇',progress:0,learned:0,total:1500,color:'#F43F5E',rgb:'244,63,94',status:'idle'},
+    {emoji:'📓',name:'日常口语词汇',progress:0,learned:0,total:800,color:'#3B82F6',rgb:'59,130,246',status:'idle'}
+  ];
+}
+
+// ============================
+// Bar Chart
+// ============================
+function renderChart(totalLearned){
+  const baseVal=totalLearned>0?Math.round(totalLearned/5):0;
+  const chartData=[
+    {label:'W1',value:baseVal>0?Math.round(baseVal*0.75):168,color:'#3B82F6'},
+    {label:'W2',value:baseVal>0?Math.round(baseVal*0.88):195,color:'#8B5CF6'},
+    {label:'W3',value:baseVal>0?Math.round(baseVal*0.64):142,color:'#A855F7'},
+    {label:'W4',value:baseVal>0?Math.round(baseVal*1.0):223,color:'#00D9FF'},
+    {label:'W5',value:baseVal>0?Math.round(baseVal*0.80):178,color:'#10B981'}
+  ];
   const max=Math.max(...chartData.map(d=>d.value));
   const container=document.getElementById('barChart');
   container.innerHTML=chartData.map((d,i)=>{
@@ -309,7 +577,9 @@ function renderChart(){
   }).join('');
 }
 
-// === Heatmap ===
+// ============================
+// Heatmap
+// ============================
 const heatData=[3,4,2,3,4,1,0,3,4,3,2,4,3,2,1,3,4,4,3,2,4,3,2,1,3,4,2,3,4,2];
 function renderHeatmap(){
   const container=document.getElementById('heatmap');
@@ -319,16 +589,10 @@ function renderHeatmap(){
   }).join('');
 }
 
-// === Word Books ===
-const books=[
-  {emoji:'📘',name:'雅思核心词汇',progress:75,learned:2247,total:3000,color:'#00D9FF',rgb:'0,217,255',status:'active'},
-  {emoji:'📗',name:'CET-4 词汇',progress:100,learned:4500,total:4500,color:'#10B981',rgb:'16,185,129',status:'done'},
-  {emoji:'📕',name:'CET-6 词汇',progress:32,learned:1820,total:5600,color:'#F59E0B',rgb:'245,158,11',status:'active'},
-  {emoji:'📙',name:'TOEFL 核心词汇',progress:0,learned:0,total:4000,color:'#A855F7',rgb:'168,85,247',status:'idle'},
-  {emoji:'📔',name:'商务英语词汇',progress:0,learned:0,total:1500,color:'#F43F5E',rgb:'244,63,94',status:'idle'},
-  {emoji:'📓',name:'日常口语词汇',progress:0,learned:0,total:800,color:'#3B82F6',rgb:'59,130,246',status:'idle'}
-];
-function renderBooks(){
+// ============================
+// Word Books
+// ============================
+function renderBooks(books){
   const container=document.getElementById('bookList');
   container.innerHTML=books.map(b=>{
     const statusText=b.status==='done'?'✅ 已完成':b.status==='active'?'🟢 进行中':'⬜ 未开始';
@@ -342,7 +606,6 @@ function renderBooks(){
       '<div class="book-status '+b.status+'">'+statusText+'</div>'+
     '</div>';
   }).join('');
-  // Animate bars
   setTimeout(()=>{
     document.querySelectorAll('.book-bar-fill').forEach(bar=>{
       bar.style.width=bar.dataset.target+'%';
@@ -350,7 +613,26 @@ function renderBooks(){
   },400);
 }
 
-// === Ebbinghaus Curve Stage Markers ===
+// ============================
+// Review Stages
+// ============================
+function updateReviewStages(errorData){
+  // If we have error data, estimate review stages
+  if(errorData&&Array.isArray(errorData)){
+    const totalErrors=errorData.length;
+    // Distribute errors across stages
+    document.getElementById('rs1').textContent=Math.min(totalErrors,5);
+    document.getElementById('rs2').textContent=Math.min(Math.max(totalErrors-5,0),3);
+    document.getElementById('rs3').textContent=Math.min(Math.max(totalErrors-8,0),2);
+    document.getElementById('rs4').textContent=Math.min(Math.max(totalErrors-10,0),1);
+    document.getElementById('rs5').textContent=Math.min(Math.max(totalErrors-11,0),1);
+    document.getElementById('rs6').textContent=Math.min(Math.max(totalErrors-12,0),0);
+  }
+}
+
+// ============================
+// Ebbinghaus Curve Stage Markers
+// ============================
 function renderCurveStages(){
   const svg=document.getElementById('curveSvg');
   const stages=[
@@ -379,17 +661,43 @@ function renderCurveStages(){
   });
 }
 
-// === Init ===
-renderChart();renderHeatmap();renderBooks();renderCurveStages();
+// ============================
+// iframe Toggle
+// ============================
+function toggleIframe(){
+  const section=document.getElementById('iframeSection');
+  const placeholder=document.getElementById('iframePlaceholder');
+  const status=document.getElementById('iframeStatus');
+  const frame=document.getElementById('learningFrame');
 
-// Animate counters and rings after a short delay
-setTimeout(()=>{
-  document.querySelectorAll('[data-count]').forEach(el=>animateCount(el));
-  animateRing('ring1',41.6);
-  animateRing('ring2',43.0);
-  animateRing('ring3',76.7);
-  animateRing('ring4',70.0);
-},200);
+  if(!section.classList.contains('expanded')){
+    section.classList.add('expanded');
+    status.textContent='加载中...';
+    // Load iframe only when first expanded
+    if(frame.src==='about:blank'){
+      frame.src='英语学习.html';
+    }
+  }else{
+    section.classList.remove('expanded');
+    status.textContent='点击展开';
+  }
+}
+
+function onIframeLoad(){
+  const placeholder=document.getElementById('iframePlaceholder');
+  const status=document.getElementById('iframeStatus');
+  if(placeholder)placeholder.style.display='none';
+  status.textContent='已加载';
+}
+
+// ============================
+// Init
+// ============================
+renderCurveStages();
+loadDashboardData();
+
+// Auto-refresh data every 30 seconds
+setInterval(loadDashboardData,30000);
 </script>
 </body>
 </html>
